@@ -1,3 +1,4 @@
+# app.py - Backend para Render
 from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 import sqlite3
@@ -6,7 +7,8 @@ from datetime import datetime
 import os
 
 app = Flask(__name__)
-CORS(app)
+# Permitir todos los orígenes (para Netlify)
+CORS(app, resources={r"/*": {"origins": "*"}})
 
 # Nombre de la base de datos
 DB_NAME = 'vehiculos.db'
@@ -35,16 +37,23 @@ def init_db():
     print("✅ Base de datos inicializada")
 
 # ============================================
-# RUTA PRINCIPAL - SERVIR EL HTML
+# API ENDPOINTS
 # ============================================
 @app.route('/')
 def index():
-    """Servir la página principal"""
-    return send_from_directory('.', 'index.html')
+    """Endpoint raíz - información de la API"""
+    return jsonify({
+        'message': 'API de Sistema de Placas',
+        'version': '1.0',
+        'endpoints': {
+            'GET /vehiculos': 'Obtener todos los vehículos',
+            'POST /vehiculos': 'Agregar un nuevo vehículo',
+            'GET /vehiculos/<plate>': 'Buscar vehículo por placa',
+            'DELETE /vehiculos/<id>': 'Eliminar vehículo por ID',
+            'GET /stats': 'Obtener estadísticas'
+        }
+    }), 200
 
-# ============================================
-# API ENDPOINTS
-# ============================================
 @app.route('/vehiculos', methods=['GET'])
 def get_vehiculos():
     """Obtener todos los vehículos"""
@@ -207,16 +216,11 @@ def get_stats():
 
 if __name__ == '__main__':
     init_db()
+    port = int(os.environ.get('PORT', 10000))
     print("=" * 60)
-    print("🚀 SERVIDOR INICIADO CORRECTAMENTE")
+    print("🚀 SERVIDOR INICIADO EN RENDER")
     print("=" * 60)
+    print(f"🌐 Puerto: {port}")
     print("📊 Base de datos: vehiculos.db")
-    print("🌐 Abre tu navegador y ve a:")
-    print("")
-    print("    👉 http://127.0.0.1:5000")
-    print("")
     print("=" * 60)
-    print("⚠️  IMPORTANTE: NO abras el archivo HTML directamente")
-    print("   Usa la URL de arriba para que funcione correctamente")
-    print("=" * 60)
-    app.run(debug=True, port=5000, host='127.0.0.1')
+    app.run(host='0.0.0.0', port=port, debug=False)
