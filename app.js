@@ -641,7 +641,14 @@ window.deleteVehicle = async function(id) {
             showStatus('❌ Error al eliminar: ' + error.message, 'error');
         }
     }
-}
+}; // 👈  ESTE PUNTO Y COMA ES CLAVE
+
+(async function init() {
+    await checkConnection();
+    await loadDatabase();
+    setInterval(checkConnection, 30000);
+})();
+
 
 // Inicialización
 (async function init() {
