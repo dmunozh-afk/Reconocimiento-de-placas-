@@ -1,8 +1,6 @@
-# app.py - Backend para Render
 from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 import sqlite3
-import json
 from datetime import datetime
 import os
 
@@ -51,23 +49,16 @@ def init_db():
     conn.close()
     print("✅ Base de datos inicializada")
 
+# Inicializar la base de datos tan pronto como se cargue el script
+init_db()
+
 # ============================================
 # API ENDPOINTS
 # ============================================
 @app.route('/')
-def index():
-    """Endpoint raíz - información de la API"""
-    return jsonify({
-        'message': 'API de Sistema de Placas',
-        'version': '1.0',
-        'endpoints': {
-            'GET /vehiculos': 'Obtener todos los vehículos',
-            'POST /vehiculos': 'Agregar un nuevo vehículo',
-            'GET /vehiculos/<plate>': 'Buscar vehículo por placa',
-            'DELETE /vehiculos/<id>': 'Eliminar vehículo por ID',
-            'GET /stats': 'Obtener estadísticas'
-        }
-    }), 200
+def root():
+    """Raíz de la API que devuelve un array vacío"""
+    return jsonify([]), 200  # Devuelve un array vacío para la conexión
 
 @app.route('/vehiculos', methods=['GET'])
 def get_vehiculos():
@@ -230,7 +221,6 @@ def get_stats():
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
-    init_db()
     port = int(os.environ.get('PORT', 10000))
     print("=" * 60)
     print("🚀 SERVIDOR INICIADO EN RENDER")
