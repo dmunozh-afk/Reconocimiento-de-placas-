@@ -7,8 +7,23 @@ from datetime import datetime
 import os
 
 app = Flask(__name__)
-# Permitir todos los orígenes (para Netlify)
-CORS(app, resources={r"/*": {"origins": "*"}})
+
+# CONFIGURACIÓN CRÍTICA DE CORS - Permitir todos los orígenes
+CORS(app, 
+     resources={r"/*": {
+         "origins": "*",
+         "methods": ["GET", "POST", "DELETE", "OPTIONS"],
+         "allow_headers": ["Content-Type", "Accept"],
+         "supports_credentials": False
+     }})
+
+# Agregar headers CORS manualmente también
+@app.after_request
+def after_request(response):
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+    response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
+    return response
 
 # Nombre de la base de datos
 DB_NAME = 'vehiculos.db'
