@@ -1,5 +1,5 @@
 // ⚠️ URL de tu backend en Render
-const API_URL = 'https://reconocimiento-de-placas-3.onrender.com';
+const API_URL = 'https://reconocimiento-de-placas-5.onrender.com';
 
 let stream = null;
 let isProcessing = false;
@@ -10,7 +10,7 @@ let isConnected = false;
 
 const video = document.getElementById('video');
 const canvas = document.getElementById('canvas');
-const ctx = canvas.getContext('2d');
+const ctx = canvas.getContext('2d');4
 const startBtn = document.getElementById('startBtn');
 const stopBtn = document.getElementById('stopBtn');
 const statusDiv = document.getElementById('status');
@@ -32,7 +32,7 @@ const connectionBadge = document.getElementById('connectionBadge');
 // ============================================
 async function checkConnection() {
     try {
-        const response = await fetch(API_URL, { 
+        const response = await fetch(`${API_URL}/vehiculos`, { 
             method: 'GET',
             headers: { 'Content-Type': 'application/json' }
         });
@@ -62,7 +62,7 @@ function updateConnectionStatus(connected) {
 // ============================================
 async function loadVehiclesFromAPI() {
     try {
-        const response = await fetch(API_URL);
+        const response = await fetch(`${API_URL}/vehiculos`);
         if (response.ok) {
             const vehicles = await response.json();
             console.log('✅ Datos cargados desde API:', vehicles.length, 'vehículos');
@@ -76,14 +76,14 @@ async function loadVehiclesFromAPI() {
 
 async function addVehicleToAPI(vehicle) {
     try {
-        console.log('Enviando a:', API_URL);
+        console.log('Enviando a:', `${API_URL}/vehiculos`);
         console.log('Datos del vehículo:', {
             ...vehicle,
             ownerPhoto: vehicle.ownerPhoto ? 'base64...' : 'sin foto',
             carPhoto: vehicle.carPhoto ? 'base64...' : 'sin foto'
         });
         
-        const response = await fetch(API_URL, {
+        const response = await fetch(`${API_URL}/vehiculos`, {
             method: 'POST',
             headers: { 
                 'Content-Type': 'application/json',
@@ -121,7 +121,7 @@ async function addVehicleToAPI(vehicle) {
 
 async function deleteVehicleFromAPI(id) {
     try {
-        const response = await fetch(`${API_URL}/${id}`, {
+        const response = await fetch(`${API_URL}/vehiculos`, {
             method: 'DELETE'
         });
         
@@ -139,7 +139,7 @@ async function deleteVehicleFromAPI(id) {
 
 async function searchVehicleInAPI(plate) {
     try {
-        const response = await fetch(`${API_URL}/${plate}`);
+        const response = await fetch(`${API_URL}/vehiculos`);
         if (response.ok) {
             const vehicle = await response.json();
             return vehicle;
