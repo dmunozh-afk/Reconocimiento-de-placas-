@@ -15,13 +15,6 @@ CORS(app,
          "supports_credentials": False
      }})
 
-# Agregar headers CORS manualmente también
-@app.after_request
-def after_request(response):
-    response.headers.add('Access-Control-Allow-Origin', '*')
-    response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
-    response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
-    return response
 
 # Nombre de la base de datos
 DB_NAME = 'vehiculos.db'
@@ -229,3 +222,4 @@ if __name__ == '__main__':
     print("📊 Base de datos: vehiculos.db")
     print("=" * 60)
     app.run(host='0.0.0.0', port=port, debug=False)
+
